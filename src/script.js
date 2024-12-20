@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import * as dat from "lil-gui";
 
 /**
@@ -19,6 +20,10 @@ const scene = new THREE.Scene();
  * Models
  */
 
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath("/draco/"); // Ensure the Draco decoder is in public/draco/
+gltfLoader.setDRACOLoader(dracoLoader);
+
 // Load GLTF Model
 const gltfLoader = new GLTFLoader();
 gltfLoader.load(
@@ -28,14 +33,6 @@ gltfLoader.load(
     model.position.set(0, 0, 0); // Adjust position as needed
     model.scale.set(1, 1, 1); // Adjust scale as needed
     scene.add(model);
-
-    // Handle animations if present
-    if (gltf.animations.length > 0) {
-      mixer = new THREE.AnimationMixer(model);
-      gltf.animations.forEach((clip) => {
-        mixer.clipAction(clip).play();
-      });
-    }
   },
   undefined,
   (error) => {
